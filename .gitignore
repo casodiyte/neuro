@@ -37,6 +37,8 @@ yarn-error.log*
 /dist/
 /.wrangler/
 /outputs/
-/work/
 # Local analysis intermediates
 /work/
+
+# Local Sites deployment archives
+/artifacts/
