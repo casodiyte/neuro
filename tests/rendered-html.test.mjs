@@ -72,6 +72,8 @@ test("ships a visible WebGL field with motion and accessibility safeguards", asy
   assert.match(canvas, /pointermove/);
   assert.match(canvas, /THREE\.NormalBlending/);
   assert.match(motion, /IntersectionObserver/);
+  assert.match(motion, /MutationObserver/);
+  assert.match(motion, /motion-card/);
   assert.match(motion, /prefers-reduced-motion: reduce/);
   assert.match(motion, /--motion-delay/);
   assert.match(css, /\.neural-canvas[^}]*z-index:\s*0/);
