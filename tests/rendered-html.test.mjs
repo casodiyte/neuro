@@ -78,6 +78,8 @@ test("ships a visible WebGL field with motion and accessibility safeguards", asy
   assert.match(motion, /motion-card/);
   assert.match(motion, /pointermove/);
   assert.match(motion, /--pointer-x/);
+  assert.match(motion, /getBoundingClientRect/);
+  assert.match(motion, /\.title-line/);
   assert.match(motion, /prefers-reduced-motion: reduce/);
   assert.match(motion, /--motion-delay/);
   assert.match(textReveal, /text-reveal-word/);

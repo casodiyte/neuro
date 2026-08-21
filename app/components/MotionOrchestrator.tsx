@@ -146,8 +146,17 @@ export function MotionOrchestrator() {
         element.classList.add("motion-text");
         element.style.setProperty("--motion-delay", `${55 + (index % 3) * 35}ms`);
 
-        if (observer) observer.observe(element);
-        else element.classList.add("is-visible");
+        const isAlreadyOnScreen =
+          element.matches(".title-line") ||
+          element.getBoundingClientRect().top < window.innerHeight * 0.92;
+
+        if (isAlreadyOnScreen) {
+          requestAnimationFrame(() => element.classList.add("is-visible"));
+        } else if (observer) {
+          observer.observe(element);
+        } else {
+          element.classList.add("is-visible");
+        }
       });
     };
 

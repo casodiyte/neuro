@@ -257,7 +257,13 @@ body::before {
   transform: translateY(18px) rotateX(-28deg);
   transform-origin: bottom center;
 }
-.js-motion .motion-text.is-visible .text-reveal-word { animation: revealWord 400ms var(--ease) both; }
+.js-motion .motion-text.is-visible .text-reveal-word {
+  opacity: 1;
+  clip-path: inset(0);
+  filter: blur(0);
+  transform: translateY(0) rotateX(0);
+  animation: revealWord 400ms var(--ease) both;
+}
 @keyframes revealWord {
   to { opacity: 1; clip-path: inset(0); filter: blur(0); transform: translateY(0) rotateX(0); }
 }
