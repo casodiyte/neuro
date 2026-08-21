@@ -83,6 +83,8 @@ test("ships a visible WebGL field with motion and accessibility safeguards", asy
   assert.doesNotMatch(textReveal, /useState|IntersectionObserver/);
   assert.match(css, /\.neural-canvas[^}]*z-index:\s*0/);
   assert.match(css, /#main-content,main[^}]*z-index:\s*1/);
+  assert.match(css, /\.visual-card-media img[^}]*object-fit:\s*contain/);
+  assert.match(css, /\.visual-card-media img[^}]*padding:\s*clamp/);
   assert.match(packageJson, /"three"/);
   assert.match(hosting, /"project_id": "appgprj_/);
   assert.match(header, /aria-expanded/);

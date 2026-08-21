@@ -192,8 +192,9 @@ body::before {
 .visual-card-featured { grid-row: 1 / 3; border-radius: 36px; }
 .visual-card-media { position: relative; flex: 1; min-height: 140px; margin: 0; overflow: hidden; }
 .visual-card-media::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at top, rgba(0,180,216,0.1), transparent 70%); }
-.visual-card-media img { z-index: 1; object-fit: contain; object-position: bottom center; padding: 0; mix-blend-mode: multiply; transition: transform 800ms var(--ease); }
-.visual-card:hover .visual-card-media img { transform: scale(1.08); }
+.visual-card-media img { z-index: 1; object-fit: contain; object-position: center; padding: clamp(14px, 1.4vw, 24px); mix-blend-mode: multiply; transition: transform 800ms var(--ease); }
+.visual-card-featured .visual-card-media img { padding: clamp(24px, 2.2vw, 42px); }
+.visual-card:hover .visual-card-media img { transform: scale(1.025); }
 .visual-chip { position: absolute; left: 18px; top: 18px; z-index: 2; display: inline-flex; align-items: center; padding: 4px 12px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.9); border-radius: 999px; color: var(--cyan); font: 800 0.62rem var(--font-display), sans-serif; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
 .visual-card-copy { position: relative; z-index: 10; display: flex; flex-direction: column; gap: 8px; padding: 24px; background: rgba(255,255,255,0.9); flex: 0 0 auto; min-height: fit-content; }
 .visual-number { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: var(--coral); color: #fff; font: 800 .75rem var(--font-display), sans-serif; letter-spacing: .05em; box-shadow: 0 8px 16px rgba(255, 102, 0, 0.25); }
@@ -365,7 +366,7 @@ body::before {
   .motion-card:hover :is(h3, strong, .metric) { color: var(--cyan); }
   .motion-card:hover :is(.visual-number, .phase-number) { transform: rotate(-7deg) scale(1.08); }
   .motion-card:hover .phase-orb { scale: 1.14; translate: 10px 8px; opacity: .62; }
-  .visual-card.motion-card:hover .visual-card-media img { transform: scale(1.055) rotate(.35deg); }
+  .visual-card.motion-card:hover .visual-card-media img { transform: scale(1.025) rotate(.2deg); }
   .phase-card:nth-child(2).motion-card:hover { transform: translateY(42px) perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); }
 }
 
