@@ -56,7 +56,7 @@ test("renders every route as a distinct URL", async () => {
 });
 
 test("ships a visible WebGL field with motion and accessibility safeguards", async () => {
-  const [canvas, motion, textReveal, css, header, packageJson, hosting] = await Promise.all([
+  const [canvas, motion, textReveal, css, header, packageJson, hosting, netlify] = await Promise.all([
     readFile(new URL("../app/components/NeuralCanvas.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/MotionOrchestrator.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/TextReveal.tsx", import.meta.url), "utf8"),
@@ -64,6 +64,7 @@ test("ships a visible WebGL field with motion and accessibility safeguards", asy
     readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
+    readFile(new URL("../netlify.toml", import.meta.url), "utf8"),
   ]);
 
   assert.match(canvas, /from "three"/);
@@ -86,7 +87,9 @@ test("ships a visible WebGL field with motion and accessibility safeguards", asy
   assert.match(css, /\.visual-card-media img[^}]*object-fit:\s*contain/);
   assert.match(css, /\.visual-card-media img[^}]*padding:\s*clamp/);
   assert.match(packageJson, /"three"/);
+  assert.match(packageJson, /"build:netlify": "next build"/);
   assert.match(hosting, /"project_id": "appgprj_/);
+  assert.match(netlify, /publish = "\.next"/);
   assert.match(header, /aria-expanded/);
   assert.match(header, /aria-label="Navegación principal"/);
 });
