@@ -15,12 +15,6 @@ export default function Home() {
             <Link className="button button-ghost" href="/mentoria">Conocer la experiencia</Link>
           </div>
         </div>
-        <aside className="signal-card" aria-label="Resumen del programa">
-          <div className="signal-card-top"><span>SEÑAL / 01</span><span className="live-dot">EN VIVO</span></div>
-          <div className="waveform" aria-hidden="true">{Array.from({ length: 36 }).map((_, index) => <i key={index} style={{ "--bar": `${18 + ((index * 17) % 72)}%` } as React.CSSProperties} />)}</div>
-          <div className="signal-readout"><div><strong>80 h</strong><span>formación lectiva y práctica</span></div><div><strong>12 m</strong><span>seguimiento continuo</span></div></div>
-          <div className="signal-meta"><span>Cupo máximo</span><strong>08 médicos</strong></div>
-        </aside>
       </section>
 
       <section className="proof-strip" aria-label="Datos clave">

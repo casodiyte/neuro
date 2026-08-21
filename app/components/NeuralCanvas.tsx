@@ -96,7 +96,7 @@ const fragmentShader = /* glsl */ `
     activeColor = mix(activeColor, orange, smoothstep(0.76, 0.98, zoneB) * 0.86);
     vec3 color = mix(deep + cyan * 0.12, activeColor, smoothstep(0.04, 0.86, vEnergy));
 
-    float alpha = alphaShape * mix(0.17, 0.96, vEnergy);
+    float alpha = alphaShape * mix(0.26, 0.98, vEnergy);
     gl_FragColor = vec4(color, alpha);
   }
 `;
@@ -140,7 +140,7 @@ export function NeuralCanvas() {
       transparent: true,
       depthWrite: false,
       depthTest: false,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
     });
 
     let mesh: THREE.Mesh<THREE.InstancedBufferGeometry, THREE.ShaderMaterial> | null = null;

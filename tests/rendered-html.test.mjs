@@ -37,6 +37,7 @@ test("server-renders the completed Spanish home page", async () => {
   assert.match(html, /href="\/programa"/);
   assert.match(html, /href="\/inscripcion"/);
   assert.match(html, /Saltar al contenido principal/);
+  assert.doesNotMatch(html, /signal-card|SEÑAL \/ 01|EN VIVO/);
 });
 
 test("renders every route as a distinct URL", async () => {
@@ -50,9 +51,10 @@ test("renders every route as a distinct URL", async () => {
   }
 });
 
-test("ships the WebGL field with motion and accessibility safeguards", async () => {
-  const [canvas, header, packageJson, hosting] = await Promise.all([
+test("ships a visible WebGL field with motion and accessibility safeguards", async () => {
+  const [canvas, css, header, packageJson, hosting] = await Promise.all([
     readFile(new URL("../app/components/NeuralCanvas.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
@@ -63,6 +65,9 @@ test("ships the WebGL field with motion and accessibility safeguards", async () 
   assert.match(canvas, /ShaderMaterial/);
   assert.match(canvas, /prefers-reduced-motion: reduce/);
   assert.match(canvas, /pointermove/);
+  assert.match(canvas, /THREE\.NormalBlending/);
+  assert.match(css, /\.neural-canvas[^}]*z-index:\s*0/);
+  assert.match(css, /#main-content,main[^}]*z-index:\s*1/);
   assert.match(packageJson, /"three"/);
   assert.match(hosting, /"project_id": "appgprj_/);
   assert.match(header, /aria-expanded/);
