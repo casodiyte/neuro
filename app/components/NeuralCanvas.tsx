@@ -39,18 +39,18 @@ const vertexShader = /* glsl */ `
     vec2 pushDirection = relative / distanceToMouse;
 
     // An imperfect halo breathes, ripples and stretches in the travel direction.
-    float organicEdge = sin(angleToMouse * 3.0 + uTime * 0.31) * 0.20
-      + sin(angleToMouse * 7.0 - uTime * 0.19 + aRandom * 2.0) * 0.10;
-    float breathing = sin(uTime * 0.76) * 0.22 * uMotion;
+    float organicEdge = sin(angleToMouse * 3.0 + uTime * 0.31) * 0.30
+      + sin(angleToMouse * 7.0 - uTime * 0.19 + aRandom * 2.0) * 0.15;
+    float breathing = sin(uTime * 0.76) * 0.85 * uMotion;
     float pointerSpeed = clamp(length(uMouseVelocity) * 0.34, 0.0, 1.0);
     float velocityAngle = atan(uMouseVelocity.y, uMouseVelocity.x);
     float directionalStretch = cos(angleToMouse - velocityAngle) * pointerSpeed * 0.58;
-    float haloRadius = 4.15 + organicEdge * 1.45 + breathing * 1.25 + directionalStretch * 0.72;
-    float halo = smoothstep(2.05, 0.0, abs(distanceToMouse - haloRadius));
-    float innerField = smoothstep(7.8, 0.0, distanceToMouse);
-    float core = smoothstep(2.35, 0.05, distanceToMouse);
+    float haloRadius = 9.5 + organicEdge * 1.45 + breathing * 1.25 + directionalStretch * 0.72;
+    float halo = smoothstep(4.5, 0.0, abs(distanceToMouse - haloRadius));
+    float innerField = smoothstep(16.0, 0.0, distanceToMouse);
+    float core = smoothstep(6.5, 0.05, distanceToMouse);
 
-    float pulse = (sin(uTime * 1.22 - distanceToMouse * 2.1) * 0.5 + 0.5) * uMotion;
+    float pulse = (sin(uTime * 1.22 - distanceToMouse * 1.0) * 0.5 + 0.5) * uMotion;
     pos.xy += pushDirection * (halo * (0.23 + pulse * 0.34) + core * 0.34);
     pos.z += halo * sin(uTime + aRandom * 5.0) * 0.24 * uMotion;
 
@@ -96,7 +96,7 @@ const fragmentShader = /* glsl */ `
     activeColor = mix(activeColor, orange, smoothstep(0.76, 0.98, zoneB) * 0.86);
     vec3 color = mix(deep + cyan * 0.12, activeColor, smoothstep(0.04, 0.86, vEnergy));
 
-    float alpha = alphaShape * mix(0.26, 0.98, vEnergy);
+    float alpha = alphaShape * mix(0.1, 0.4, vEnergy);
     gl_FragColor = vec4(color, alpha);
   }
 `;
@@ -151,6 +151,7 @@ export function NeuralCanvas() {
     const previousMouse = new THREE.Vector2(0, 0);
     const smoothedVelocity = new THREE.Vector2(0, 0);
     const instantaneousVelocity = new THREE.Vector2(0, 0);
+    let isMouseInside = false;
 
     const createField = () => {
       if (mesh) {
@@ -192,7 +193,7 @@ export function NeuralCanvas() {
     };
 
     const resize = () => {
-      const width = window.innerWidth;
+      const width = document.documentElement.clientWidth;
       const height = window.innerHeight;
       worldWidth = worldHeight * (width / height);
       camera.left = -worldWidth / 2;
@@ -200,7 +201,7 @@ export function NeuralCanvas() {
       camera.top = worldHeight / 2;
       camera.bottom = -worldHeight / 2;
       camera.updateProjectionMatrix();
-      renderer.setSize(width, height, false);
+      renderer.setSize(width, height);
       createField();
       renderer.render(scene, camera);
     };
@@ -208,7 +209,11 @@ export function NeuralCanvas() {
     const render = (timestamp: number) => {
       uniforms.uTime.value = timestamp / 1000;
       previousMouse.copy(uniforms.uMouse.value);
-      uniforms.uMouse.value.copy(targetMouse);
+      if (isMouseInside) {
+        uniforms.uMouse.value.lerp(targetMouse, 0.08);
+      } else {
+        uniforms.uMouse.value.lerp(targetMouse, 0.012);
+      }
       instantaneousVelocity.copy(uniforms.uMouse.value).sub(previousMouse).multiplyScalar(12);
       smoothedVelocity.lerp(instantaneousVelocity, 0.12);
       uniforms.uMouseVelocity.value.copy(smoothedVelocity);
@@ -217,12 +222,16 @@ export function NeuralCanvas() {
     };
 
     const onPointerMove = (event: PointerEvent) => {
+      isMouseInside = true;
       targetMouse.set(
-        (event.clientX / window.innerWidth - 0.5) * worldWidth,
+        (event.clientX / document.documentElement.clientWidth - 0.5) * worldWidth,
         -(event.clientY / window.innerHeight - 0.5) * worldHeight,
       );
     };
-    const onPointerLeave = () => targetMouse.set(0, 0);
+    const onPointerLeave = () => {
+      isMouseInside = false;
+      targetMouse.set(0, 0);
+    };
     const onVisibilityChange = () => {
       cancelAnimationFrame(frame);
       if (!document.hidden && !reducedMotion) frame = requestAnimationFrame(render);

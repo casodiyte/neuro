@@ -33,6 +33,10 @@ test("server-renders the completed Spanish home page", async () => {
   assert.match(html, /Escucha el flujo/);
   assert.match(html, /Interpreta el cerebro/);
   assert.match(html, /CDMX · 21—25 OCT 2026/);
+  assert.match(html, /Tres formas de aprender/);
+  assert.match(html, /clay-doppler-v1\.png/);
+  assert.match(html, /clay-willis-v1\.png/);
+  assert.match(html, /clay-training-v1\.png/);
   assert.match(html, /class="neural-canvas"/);
   assert.match(html, /href="\/programa"/);
   assert.match(html, /href="\/inscripcion"/);
@@ -52,8 +56,9 @@ test("renders every route as a distinct URL", async () => {
 });
 
 test("ships a visible WebGL field with motion and accessibility safeguards", async () => {
-  const [canvas, css, header, packageJson, hosting] = await Promise.all([
+  const [canvas, motion, css, header, packageJson, hosting] = await Promise.all([
     readFile(new URL("../app/components/NeuralCanvas.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/MotionOrchestrator.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
@@ -66,6 +71,9 @@ test("ships a visible WebGL field with motion and accessibility safeguards", asy
   assert.match(canvas, /prefers-reduced-motion: reduce/);
   assert.match(canvas, /pointermove/);
   assert.match(canvas, /THREE\.NormalBlending/);
+  assert.match(motion, /IntersectionObserver/);
+  assert.match(motion, /prefers-reduced-motion: reduce/);
+  assert.match(motion, /--motion-delay/);
   assert.match(css, /\.neural-canvas[^}]*z-index:\s*0/);
   assert.match(css, /#main-content,main[^}]*z-index:\s*1/);
   assert.match(packageJson, /"three"/);

@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Figtree, Noto_Sans } from "next/font/google";
 import { headers } from "next/headers";
 import { NeuralCanvas } from "./components/NeuralCanvas";
+import { MotionOrchestrator } from "./components/MotionOrchestrator";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
+import { GooeyFilter } from "./components/GooeyFilter";
 import "./globals.css";
 
 const figtree = Figtree({ variable: "--font-display", subsets: ["latin"] });
@@ -33,6 +35,8 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${figtree.variable} ${notoSans.variable}`}>
+        <GooeyFilter />
+        <MotionOrchestrator />
         <a className="skip-link" href="#main-content">Saltar al contenido principal</a>
         <NeuralCanvas />
         <SiteHeader />
