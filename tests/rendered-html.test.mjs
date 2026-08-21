@@ -90,6 +90,7 @@ test("ships a visible WebGL field with motion and accessibility safeguards", asy
   assert.match(packageJson, /"build:netlify": "next build"/);
   assert.match(hosting, /"project_id": "appgprj_/);
   assert.match(netlify, /publish = "\.next"/);
+  assert.match(netlify, /@netlify\/plugin-nextjs/);
   assert.match(header, /aria-expanded/);
   assert.match(header, /aria-label="Navegación principal"/);
 });
