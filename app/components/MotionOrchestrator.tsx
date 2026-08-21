@@ -56,25 +56,6 @@ const TEXT_SELECTOR = [
   ".profile-copy h2",
   ".mentor-method h2",
   ".form-section h2",
-  ".visual-card-copy > *",
-  ".phase-card h3",
-  ".phase-card .phase-copy",
-  ".difference-list h3",
-  ".difference-list p",
-  ".immersion-grid h2",
-  ".immersion-grid h3",
-  ".immersion-grid p",
-  ".module-main h3",
-  ".module-main > p",
-  ".schedule-list h3",
-  ".schedule-list p",
-  ".cert-steps h3",
-  ".event-card h2",
-  ".profile-quote p",
-  ".credential-grid strong",
-  ".credential-grid span",
-  ".admission-steps h3",
-  ".admission-steps p",
 ].join(",");
 
 function elementsWithin(scope: ParentNode, selector: string) {
@@ -86,6 +67,8 @@ export function MotionOrchestrator() {
   useEffect(() => {
     const root = document.documentElement;
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const hasFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const hoverCleanups: Array<() => void> = [];
     root.classList.add("js-motion");
 
     const observer = prefersReducedMotion || !("IntersectionObserver" in window)
@@ -101,6 +84,44 @@ export function MotionOrchestrator() {
           { rootMargin: "0px 0px -10%", threshold: 0.1 },
         );
 
+    const preparePointerMotion = (element: HTMLElement) => {
+      if (prefersReducedMotion || !hasFinePointer || element.dataset.motionHover === "ready") return;
+
+      element.dataset.motionHover = "ready";
+      let frame = 0;
+
+      const handlePointerMove = (event: PointerEvent) => {
+        const { clientX, clientY } = event;
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          const rect = element.getBoundingClientRect();
+          const x = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+          const y = Math.min(1, Math.max(0, (clientY - rect.top) / rect.height));
+
+          element.style.setProperty("--pointer-x", `${x * 100}%`);
+          element.style.setProperty("--pointer-y", `${y * 100}%`);
+          element.style.setProperty("--tilt-x", `${(0.5 - y) * 5}deg`);
+          element.style.setProperty("--tilt-y", `${(x - 0.5) * 6}deg`);
+        });
+      };
+
+      const resetPointer = () => {
+        cancelAnimationFrame(frame);
+        element.style.setProperty("--pointer-x", "50%");
+        element.style.setProperty("--pointer-y", "18%");
+        element.style.setProperty("--tilt-x", "0deg");
+        element.style.setProperty("--tilt-y", "0deg");
+      };
+
+      element.addEventListener("pointermove", handlePointerMove);
+      element.addEventListener("pointerleave", resetPointer);
+      hoverCleanups.push(() => {
+        cancelAnimationFrame(frame);
+        element.removeEventListener("pointermove", handlePointerMove);
+        element.removeEventListener("pointerleave", resetPointer);
+      });
+    };
+
     const prepare = (scope: ParentNode) => {
       elementsWithin(scope, REVEAL_SELECTOR).forEach((element, index) => {
         if (element.dataset.motionItem === "ready") return;
@@ -111,6 +132,8 @@ export function MotionOrchestrator() {
         if (element.matches(CARD_SELECTOR)) {
           element.classList.add("motion-card");
           element.style.setProperty("--motion-x", index % 2 === 0 ? "-12px" : "12px");
+          element.style.setProperty("--motion-rotate", index % 2 === 0 ? "-1deg" : "1deg");
+          preparePointerMotion(element);
         }
 
         if (observer) observer.observe(element);
@@ -146,6 +169,7 @@ export function MotionOrchestrator() {
     return () => {
       observer?.disconnect();
       mutationObserver?.disconnect();
+      hoverCleanups.forEach((cleanup) => cleanup());
       root.classList.remove("js-motion");
     };
   }, []);

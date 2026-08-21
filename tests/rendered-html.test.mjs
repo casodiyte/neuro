@@ -56,9 +56,10 @@ test("renders every route as a distinct URL", async () => {
 });
 
 test("ships a visible WebGL field with motion and accessibility safeguards", async () => {
-  const [canvas, motion, css, header, packageJson, hosting] = await Promise.all([
+  const [canvas, motion, textReveal, css, header, packageJson, hosting] = await Promise.all([
     readFile(new URL("../app/components/NeuralCanvas.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/MotionOrchestrator.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/TextReveal.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
@@ -74,8 +75,12 @@ test("ships a visible WebGL field with motion and accessibility safeguards", asy
   assert.match(motion, /IntersectionObserver/);
   assert.match(motion, /MutationObserver/);
   assert.match(motion, /motion-card/);
+  assert.match(motion, /pointermove/);
+  assert.match(motion, /--pointer-x/);
   assert.match(motion, /prefers-reduced-motion: reduce/);
   assert.match(motion, /--motion-delay/);
+  assert.match(textReveal, /text-reveal-word/);
+  assert.doesNotMatch(textReveal, /useState|IntersectionObserver/);
   assert.match(css, /\.neural-canvas[^}]*z-index:\s*0/);
   assert.match(css, /#main-content,main[^}]*z-index:\s*1/);
   assert.match(packageJson, /"three"/);
