@@ -45,10 +45,10 @@ const vertexShader = /* glsl */ `
     float pointerSpeed = clamp(length(uMouseVelocity) * 0.34, 0.0, 1.0);
     float velocityAngle = atan(uMouseVelocity.y, uMouseVelocity.x);
     float directionalStretch = cos(angleToMouse - velocityAngle) * pointerSpeed * 0.58;
-    float haloRadius = 2.45 + organicEdge + breathing + directionalStretch;
-    float halo = smoothstep(1.42, 0.0, abs(distanceToMouse - haloRadius));
-    float innerField = smoothstep(5.2, 0.0, distanceToMouse);
-    float core = smoothstep(1.7, 0.05, distanceToMouse);
+    float haloRadius = 4.15 + organicEdge * 1.45 + breathing * 1.25 + directionalStretch * 0.72;
+    float halo = smoothstep(2.05, 0.0, abs(distanceToMouse - haloRadius));
+    float innerField = smoothstep(7.8, 0.0, distanceToMouse);
+    float core = smoothstep(2.35, 0.05, distanceToMouse);
 
     float pulse = (sin(uTime * 1.22 - distanceToMouse * 2.1) * 0.5 + 0.5) * uMotion;
     pos.xy += pushDirection * (halo * (0.23 + pulse * 0.34) + core * 0.34);
@@ -83,15 +83,17 @@ const fragmentShader = /* glsl */ `
     float alphaShape = 1.0 - smoothstep(0.72, 1.0, shape);
     if (alphaShape < 0.02) discard;
 
-    vec3 cyan = vec3(0.35, 0.94, 1.0);
-    vec3 violet = vec3(0.65, 0.52, 1.0);
-    vec3 coral = vec3(1.0, 0.48, 0.48);
-    vec3 deep = vec3(0.045, 0.10, 0.15);
+    vec3 cyan = vec3(0.02, 0.78, 0.84);
+    vec3 teal = vec3(0.00, 0.48, 0.60);
+    vec3 green = vec3(0.03, 0.63, 0.07);
+    vec3 orange = vec3(1.00, 0.36, 0.00);
+    vec3 deep = vec3(0.00, 0.20, 0.24);
 
     float zoneA = sin(vWorld.x * 0.42 + uTime * 0.34) * 0.5 + 0.5;
     float zoneB = sin(vWorld.y * 0.58 - uTime * 0.27 + zoneA * 2.2) * 0.5 + 0.5;
-    vec3 activeColor = mix(cyan, violet, zoneA);
-    activeColor = mix(activeColor, coral, smoothstep(0.60, 0.96, zoneB) * 0.62);
+    vec3 activeColor = mix(cyan, teal, zoneA);
+    activeColor = mix(activeColor, green, smoothstep(0.42, 0.70, zoneB) * 0.70);
+    activeColor = mix(activeColor, orange, smoothstep(0.76, 0.98, zoneB) * 0.86);
     vec3 color = mix(deep + cyan * 0.12, activeColor, smoothstep(0.04, 0.86, vEnergy));
 
     float alpha = alphaShape * mix(0.17, 0.96, vEnergy);
@@ -145,7 +147,6 @@ export function NeuralCanvas() {
     let worldWidth = 1;
     const worldHeight = 22;
     let frame = 0;
-    let lastTime = performance.now();
     const targetMouse = new THREE.Vector2(0, 0);
     const previousMouse = new THREE.Vector2(0, 0);
     const smoothedVelocity = new THREE.Vector2(0, 0);
@@ -205,11 +206,9 @@ export function NeuralCanvas() {
     };
 
     const render = (timestamp: number) => {
-      const delta = Math.min((timestamp - lastTime) / 16.67, 2);
-      lastTime = timestamp;
       uniforms.uTime.value = timestamp / 1000;
       previousMouse.copy(uniforms.uMouse.value);
-      uniforms.uMouse.value.lerp(targetMouse, 1 - Math.pow(0.945, delta));
+      uniforms.uMouse.value.copy(targetMouse);
       instantaneousVelocity.copy(uniforms.uMouse.value).sub(previousMouse).multiplyScalar(12);
       smoothedVelocity.lerp(instantaneousVelocity, 0.12);
       uniforms.uMouseVelocity.value.copy(smoothedVelocity);
@@ -226,7 +225,6 @@ export function NeuralCanvas() {
     const onPointerLeave = () => targetMouse.set(0, 0);
     const onVisibilityChange = () => {
       cancelAnimationFrame(frame);
-      lastTime = performance.now();
       if (!document.hidden && !reducedMotion) frame = requestAnimationFrame(render);
     };
 
