@@ -17,7 +17,7 @@ export function Brand() {
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const mobileItems = [
+  const mobileItems: Array<{ href: string; label: string; cta?: boolean }> = [
     { href: "/", label: "Inicio" },
     ...navItems,
     { href: "/inscripcion", label: "Solicitar lugar", cta: true },
