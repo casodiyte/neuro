@@ -37,7 +37,8 @@ test("server-renders the completed Spanish home page", async () => {
   assert.match(html, /clay-doppler-v1\.png/);
   assert.match(html, /clay-willis-v1\.png/);
   assert.match(html, /clay-training-v1\.png/);
-  assert.match(html, /Del gesto técnico a la decisión/);
+  assert.match(html, /clay-neurosonology-v2\.png/);
+  assert.match(html, /Ver la señal antes de decidir/);
   assert.match(html, /class="neural-canvas"/);
   assert.match(html, /href="\/programa"/);
   assert.match(html, /href="\/inscripcion"/);

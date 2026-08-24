@@ -103,13 +103,13 @@ export default function Home() {
           <h2 id="difference-title"><TextReveal text="No es otro curso." /><br /><em><TextReveal text="Es práctica acompañada." delay={0.14} /></em></h2>
           <figure className="difference-visual">
             <Image
-              src="/images/clay-training-v1.png"
-              alt="Ilustración clay de una práctica clínica supervisada con equipo de ultrasonido"
+              src="/images/clay-neurosonology-v2.png"
+              alt="Ilustración 3D de una exploración neurosonológica con Doppler transcraneal"
               fill
               sizes="(max-width: 980px) 100vw, 42vw"
               quality={86}
             />
-            <figcaption><span>Práctica clínica</span><strong>Del gesto técnico a la decisión.</strong></figcaption>
+            <figcaption><span>Neurosonología en tiempo real</span><strong>Ver la señal antes de decidir.</strong></figcaption>
           </figure>
         </div>
         <div className="difference-list">
