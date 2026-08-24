@@ -97,4 +97,8 @@ test("ships a visible WebGL field with motion and accessibility safeguards", asy
   assert.match(netlify, /@netlify\/plugin-nextjs/);
   assert.match(header, /aria-expanded/);
   assert.match(header, /aria-label="Navegación principal"/);
+  assert.match(header, /aria-label="Navegación móvil"/);
+  assert.match(header, /tabIndex=\{open \? 0 : -1\}/);
+  assert.match(css, /\.site-header > \.desktop-nav/);
+  assert.match(css, /\.mobile-nav\.is-open/);
 });
