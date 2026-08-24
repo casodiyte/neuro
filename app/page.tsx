@@ -98,7 +98,20 @@ export default function Home() {
       </section>
 
       <section className="section contrast-panel" aria-labelledby="difference-title">
-        <div><p className="section-index">03 / DIFERENCIAL</p><h2 id="difference-title"><TextReveal text="No es otro curso." /><br /><em><TextReveal text="Es práctica acompañada." delay={0.14} /></em></h2></div>
+        <div className="difference-intro">
+          <p className="section-index">03 / DIFERENCIAL</p>
+          <h2 id="difference-title"><TextReveal text="No es otro curso." /><br /><em><TextReveal text="Es práctica acompañada." delay={0.14} /></em></h2>
+          <figure className="difference-visual">
+            <Image
+              src="/images/clay-training-v1.png"
+              alt="Ilustración clay de una práctica clínica supervisada con equipo de ultrasonido"
+              fill
+              sizes="(max-width: 980px) 100vw, 42vw"
+              quality={86}
+            />
+            <figcaption><span>Práctica clínica</span><strong>Del gesto técnico a la decisión.</strong></figcaption>
+          </figure>
+        </div>
         <div className="difference-list">
           <article><span>01</span><div><h3>Señal antes que protocolo</h3><p>Aprende a leer morfología, velocidad y resistencia como una conversación hemodinámica en tiempo real.</p></div></article>
           <article><span>02</span><div><h3>Manos sobre el equipo</h3><p>Seis horas diarias de práctica directa para construir memoria motora, orientación espacial y confianza técnica.</p></div></article>

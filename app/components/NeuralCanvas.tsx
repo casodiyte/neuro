@@ -41,17 +41,17 @@ const vertexShader = /* glsl */ `
     // An imperfect halo breathes, ripples and stretches in the travel direction.
     float organicEdge = sin(angleToMouse * 3.0 + uTime * 0.31) * 0.30
       + sin(angleToMouse * 7.0 - uTime * 0.19 + aRandom * 2.0) * 0.15;
-    float breathing = sin(uTime * 0.76) * 0.85 * uMotion;
+    float breathing = sin(uTime * 0.76) * 3.2 * uMotion;
     float pointerSpeed = clamp(length(uMouseVelocity) * 0.34, 0.0, 1.0);
     float velocityAngle = atan(uMouseVelocity.y, uMouseVelocity.x);
     float directionalStretch = cos(angleToMouse - velocityAngle) * pointerSpeed * 0.58;
     float haloRadius = 9.5 + organicEdge * 1.45 + breathing * 1.25 + directionalStretch * 0.72;
-    float halo = smoothstep(4.5, 0.0, abs(distanceToMouse - haloRadius));
+    float halo = smoothstep(7.5, 0.0, abs(distanceToMouse - haloRadius));
     float innerField = smoothstep(16.0, 0.0, distanceToMouse);
     float core = smoothstep(6.5, 0.05, distanceToMouse);
 
     float pulse = (sin(uTime * 1.22 - distanceToMouse * 1.0) * 0.5 + 0.5) * uMotion;
-    pos.xy += pushDirection * (halo * (0.23 + pulse * 0.34) + core * 0.34);
+    pos.xy += pushDirection * (halo * (0.45 + pulse * 0.65) + core * 0.5);
     pos.z += halo * sin(uTime + aRandom * 5.0) * 0.24 * uMotion;
 
     float energy = clamp(halo * 0.92 + innerField * 0.26 + core * 0.38, 0.0, 1.0);
@@ -83,11 +83,11 @@ const fragmentShader = /* glsl */ `
     float alphaShape = 1.0 - smoothstep(0.72, 1.0, shape);
     if (alphaShape < 0.02) discard;
 
-    vec3 cyan = vec3(0.02, 0.78, 0.84);
-    vec3 teal = vec3(0.00, 0.48, 0.60);
-    vec3 green = vec3(0.03, 0.63, 0.07);
-    vec3 orange = vec3(1.00, 0.36, 0.00);
-    vec3 deep = vec3(0.00, 0.20, 0.24);
+    vec3 cyan = vec3(0.00, 0.94, 1.00);
+    vec3 teal = vec3(0.00, 0.60, 1.00);
+    vec3 green = vec3(0.70, 0.15, 1.00);
+    vec3 orange = vec3(1.00, 0.20, 0.40);
+    vec3 deep = vec3(0.04, 0.08, 0.18);
 
     float zoneA = sin(vWorld.x * 0.42 + uTime * 0.34) * 0.5 + 0.5;
     float zoneB = sin(vWorld.y * 0.58 - uTime * 0.27 + zoneA * 2.2) * 0.5 + 0.5;
