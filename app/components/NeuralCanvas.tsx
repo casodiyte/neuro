@@ -253,7 +253,7 @@ export function NeuralCanvas() {
       document.removeEventListener("visibilitychange", onVisibilityChange);
       if (mesh) mesh.geometry.dispose();
       material.dispose();
-      renderer.dispose();
+      renderer.dispose(); renderer.forceContextLoss();
     };
   }, []);
 
