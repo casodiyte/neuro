@@ -2,22 +2,47 @@
 
 import { FormEvent, useState } from "react";
 
-export function RegistrationForm() {
-  const [status, setStatus] = useState("");
+type Status = "idle" | "submitting" | "success" | "error";
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+export function RegistrationForm() {
+  const [status, setStatus] = useState<Status>("idle");
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const name = String(form.get("name") || "");
-    const specialty = String(form.get("specialty") || "");
-    const city = String(form.get("city") || "");
-    const email = String(form.get("email") || "");
-    const message = String(form.get("message") || "");
-    const subject = encodeURIComponent(`Interés en Neurosonología CDMX 2026 — ${name}`);
-    const body = encodeURIComponent(`Nombre: ${name}\nEspecialidad: ${specialty}\nCiudad/País: ${city}\nCorreo: ${email}\n\nMensaje:\n${message}`);
-    setStatus("Abriremos tu correo con la solicitud preparada.");
-    window.location.href = `mailto:neurosonologialatam@gmail.com?subject=${subject}&body=${body}`;
+    const formEl = event.currentTarget;
+    const data = new FormData(formEl);
+
+    const payload = new URLSearchParams();
+    payload.set("form-name", "registro");
+    payload.set("name", String(data.get("name") || ""));
+    payload.set("email", String(data.get("email") || ""));
+    payload.set("specialty", String(data.get("specialty") || ""));
+    payload.set("city", String(data.get("city") || ""));
+    payload.set("message", String(data.get("message") || ""));
+    payload.set("bot-field", "");
+
+    setStatus("submitting");
+
+    try {
+      const response = await fetch("/__forms.html", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: payload.toString(),
+      });
+      if (!response.ok) throw new Error("Netlify Forms respondió con error");
+      setStatus("success");
+      formEl.reset();
+    } catch {
+      setStatus("error");
+    }
   };
+
+  const statusMessage =
+    status === "success"
+      ? "Solicitud enviada. El equipo académico te contactará pronto."
+      : status === "error"
+      ? "No pudimos enviar tu solicitud. Intenta de nuevo o escribe a neurosonologialatam@gmail.com."
+      : "";
 
   return (
     <form className="registration-form" onSubmit={submit}>
@@ -31,8 +56,10 @@ export function RegistrationForm() {
       </div>
       <label>¿Qué esperas resolver con el programa?<textarea name="message" rows={5} required /></label>
       <label className="consent"><input type="checkbox" required /> <span>Acepto que el equipo académico me contacte sobre esta cohorte.</span></label>
-      <button className="button button-primary" type="submit">Preparar mi solicitud <span aria-hidden="true">↗</span></button>
-      <p className="form-status" role="status">{status}</p>
+      <button className="button button-primary" type="submit" disabled={status === "submitting"}>
+        {status === "submitting" ? "Enviando…" : "Enviar solicitud"} <span aria-hidden="true">↗</span>
+      </button>
+      <p className="form-status" role="status">{statusMessage}</p>
     </form>
   );
 }

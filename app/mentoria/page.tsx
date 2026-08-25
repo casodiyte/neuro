@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { onsiteDays } from "../data/program";
+import { DayAccordion } from "../components/DayAccordion";
 
 export const metadata: Metadata = {
   title: "Mentoría presencial",
@@ -33,6 +35,11 @@ export default function MentoriaPage() {
       <section className="section daily-flow" aria-labelledby="daily-title">
         <div className="section-heading narrow"><p className="section-index">UN DÍA EN CDMX</p><h2 id="daily-title">Ritmo clínico,<br /><em>no conferencia.</em></h2><p>La agenda alterna reflexión, ejecución y lectura para que cada concepto encuentre una señal concreta.</p></div>
         <div className="schedule-list">{practiceSignals.map(([time, title, copy]) => <article key={time}><time>{time}</time><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div>
+      </section>
+
+      <section className="section onsite-section" aria-labelledby="onsite-title">
+        <div className="section-heading narrow"><p className="section-index">CINCO DÍAS EN CDMX</p><h2 id="onsite-title">Cada jornada,<br /><em>una práctica distinta.</em></h2><p>Del primer contacto con el equipo a la lectura hemodinámica avanzada: así se distribuyen las cinco jornadas presenciales.</p></div>
+        <DayAccordion days={onsiteDays} />
       </section>
 
       <section className="section aftercare"><div className="aftercare-signal" aria-hidden="true"><i /><i /><i /><i /><i /></div><div><p className="section-index">DESPUÉS DEL TALLER</p><h2>No vuelves solo<br />a tu práctica.</h2><p>Durante un año tendrás encuentros mensuales, videoteca, bibliografía y una red de consulta para revisar casos complejos.</p><Link className="button button-primary" href="/certificacion">Ver seguimiento y examen <span aria-hidden="true">↗</span></Link></div></section>

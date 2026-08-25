@@ -83,11 +83,12 @@ const fragmentShader = /* glsl */ `
     float alphaShape = 1.0 - smoothstep(0.72, 1.0, shape);
     if (alphaShape < 0.02) discard;
 
-    vec3 cyan = vec3(0.00, 0.94, 1.00);
-    vec3 teal = vec3(0.00, 0.60, 1.00);
-    vec3 green = vec3(0.70, 0.15, 1.00);
-    vec3 orange = vec3(1.00, 0.20, 0.40);
-    vec3 deep = vec3(0.04, 0.08, 0.18);
+    // FASE D: grises Doppler (dominante) + rojo arterial (acento) + morado (toque). Sin cyan/azul.
+    vec3 cyan = vec3(0.63, 0.63, 0.67);   // gris Doppler claro
+    vec3 teal = vec3(0.45, 0.45, 0.50);   // gris Doppler medio
+    vec3 green = vec3(0.486, 0.302, 1.00); // morado #7C4DFF
+    vec3 orange = vec3(0.898, 0.220, 0.310); // rojo arterial #E5384F
+    vec3 deep = vec3(0.02, 0.02, 0.03);   // negro base
 
     float zoneA = sin(vWorld.x * 0.42 + uTime * 0.34) * 0.5 + 0.5;
     float zoneB = sin(vWorld.y * 0.58 - uTime * 0.27 + zoneA * 2.2) * 0.5 + 0.5;
