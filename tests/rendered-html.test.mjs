@@ -30,9 +30,13 @@ test("server-renders the completed Spanish home page", async () => {
 
   const html = await response.text();
   assert.match(html, /lang="es"/);
-  assert.match(html, /Escucha el flujo/);
-  assert.match(html, /Interpreta el cerebro/);
+  assert.match(html, /Formación médica en/);
+  assert.match(html, /Doppler transcraneal/);
+  assert.match(html, /De la señal a la decisión clínica/);
+  assert.match(html, /40 h virtuales \+ 40 h presenciales/);
   assert.match(html, /CDMX · 21—25 OCT 2026/);
+  assert.match(html, /hero-doppler-v1\.png/);
+  assert.match(html, /Ilustración conceptual de una exploración por Doppler transcraneal/);
   assert.match(html, /Tres formas de aprender/);
   assert.match(html, /clinica-01-tecnica\.webp/);
   assert.match(html, /clinica-02-anatomia\.webp/);

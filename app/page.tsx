@@ -14,17 +14,33 @@ export default function Home() {
       <section className="hero home-hero" aria-labelledby="hero-title">
         <div className="hero-glow" aria-hidden="true" />
         <div className="hero-copy">
-          <p className="eyebrow"><span /> CDMX · 21—25 OCT 2026</p>
+          <p className="eyebrow"><span /> PROGRAMA MÉDICO HÍBRIDO · NEUROSONO DTC</p>
           <h1 id="hero-title">
-            <span className="title-line"><TextReveal text="Escucha el flujo." /></span>
-            <span className="title-line"><em><TextReveal text="Interpreta el cerebro." delay={0.12} /></em></span>
+            <span className="title-line"><TextReveal text="Formación médica en" /></span>
+            <span className="title-line"><em><TextReveal text="Doppler transcraneal." delay={0.12} /></em></span>
           </h1>
-          <p className="hero-lede">Mentoría internacional en neurosonología y hemodinamia cerebral por Doppler transcraneal. Un recorrido intensivo de la señal a la decisión clínica.</p>
+          <p className="hero-lede"><strong>De la señal a la decisión clínica.</strong> Mentoría y certificación en neurosonología y hemodinamia cerebral, con formación virtual, práctica presencial intensiva y acompañamiento durante un año.</p>
+          <ul className="hero-facts" aria-label="Datos principales del programa">
+            <li><span>Sede y fecha</span><strong>CDMX · 21—25 OCT 2026</strong></li>
+            <li><span>Formación</span><strong>40 h virtuales + 40 h presenciales</strong></li>
+            <li><span>Seguimiento</span><strong>12 meses + examen</strong></li>
+          </ul>
           <div className="hero-actions">
-            <Link className="button button-primary" href="/programa">Explorar el programa <Icon name="arrowUpRight" size={18} className="icon-cta" /></Link>
-            <Link className="button button-ghost" href="/mentoria">Conocer la experiencia</Link>
+            <Link className="button button-primary" href="/programa">Ver programa completo <Icon name="arrowUpRight" size={18} className="icon-cta" /></Link>
+            <Link className="button button-ghost" href="/mentoria">Cómo funciona la mentoría</Link>
           </div>
         </div>
+        <figure className="hero-visual">
+          <Image
+            className="hero-visual-image"
+            src="/images/neurosono/hero-doppler-v1.png"
+            alt="Ilustración conceptual de una exploración por Doppler transcraneal con flujo cerebral"
+            width={1024}
+            height={1536}
+            sizes="(max-width: 760px) 78vw, (max-width: 1100px) 34vw, 420px"
+            priority
+          />
+        </figure>
       </section>
 
       <section className="proof-strip" aria-label="Datos clave">
