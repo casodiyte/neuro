@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
-import { courses, navItems } from "../data/program";
+import { courses, journeyNav } from "../data/program";
 import { CourseSelector } from "./CourseSelector";
 import { ComingSoonModal } from "./ComingSoonModal";
 import { useDialog } from "./useDialog";
@@ -33,7 +33,7 @@ export function SiteHeader() {
     setSoonCourse(course);
   };
 
-  const menuItems = [{ href: "/", label: "Inicio" }, ...navItems];
+  const menuItems = [{ href: "/", label: "Inicio" }, ...journeyNav];
 
   return (
     <>
@@ -53,19 +53,18 @@ export function SiteHeader() {
       </header>
 
       {/* Overlay a pantalla completa (mismo patrón en desktop y móvil) */}
-      <div
-        id="site-menu"
-        ref={menuRef}
-        className={`site-menu ${open ? "is-open" : ""}`}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Menú principal"
-        aria-hidden={!open}
-        tabIndex={-1}
-        onMouseDown={closeMenu}
-      >
+      <div id="site-menu" className={`site-menu ${open ? "is-open" : ""}`} aria-hidden={!open}>
         <div className="gooey-orbs" aria-hidden="true"><i /><i /><i /></div>
-        <div className="site-menu-panel" onMouseDown={(event) => event.stopPropagation()}>
+        {/* Scrim como <button> real: clic para cerrar sin handlers sobre nodos no interactivos. */}
+        <button className="site-menu-scrim" type="button" tabIndex={-1} aria-hidden="true" onMouseDown={closeMenu} />
+        <div
+          ref={menuRef}
+          className="site-menu-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menú principal"
+          tabIndex={-1}
+        >
           <div className="site-menu-top">
             <Brand />
             <button className="menu-close" type="button" onClick={closeMenu} aria-label="Cerrar menú">

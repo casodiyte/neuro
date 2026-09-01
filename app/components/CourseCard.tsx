@@ -1,7 +1,11 @@
 import Link from "next/link";
 
 // <CourseCard /> — tarjeta de curso para "Explora el universo".
-// Prop: course = uno de los objetos de `courses` (data/program.ts).
+//
+// El contenido no son tres cosas equivalentes: hay UN curso abierto y dos en
+// preparación. La jerarquía va por CSS a partir de `.is-active` / `.is-soon`
+// (destacada a la izquierda, próximas apiladas a la derecha), así que el markup
+// es el mismo para ambas y no se duplica la estructura.
 type Course = {
   order: string;
   name: string;
@@ -22,12 +26,17 @@ export function CourseCard({ course }: { course: Course }) {
       <span className={`course-card-status ${isActive ? "is-active" : "is-soon"}`}>
         {isActive ? "Disponible" : "Próximamente"}
       </span>
-      <strong className="course-card-title">{course.title}</strong>
-      <span className="course-card-tagline">{course.tagline}</span>
-      <span className="course-card-meta">
-        {course.meta}
-        {isActive && <span className="course-card-go" aria-hidden="true">↗</span>}
+      <span className="course-card-copy">
+        <strong className="course-card-title">{course.title}</strong>
+        <span className="course-card-tagline">{course.tagline}</span>
       </span>
+      {/* En las próximas, `meta` repite literalmente el texto del badge. */}
+      {isActive && (
+        <span className="course-card-meta">
+          {course.meta}
+          <span className="course-card-go" aria-hidden="true">↗</span>
+        </span>
+      )}
     </>
   );
 

@@ -2,20 +2,21 @@
 
 import { useEffect } from "react";
 
+// Ojo: estos selectores deben seguir el markup real. Al renombrar clases hay que
+// actualizarlos o la sección pierde el reveal en silencio.
 const CARD_SELECTOR = [
   ".visual-card",
-  ".phase-card",
-  ".difference-list article",
+  ".diff-point",
   ".immersion-grid article",
-  ".module-assessment",
-  ".module-card",
   ".schedule-list article",
   ".cert-steps article",
+  ".follow-card",
   ".event-card",
   ".profile-quote",
   ".credential-grid > div",
   ".investment-card",
   ".admission-steps article",
+  ".course-card",
 ].join(",");
 
 const REVEAL_SELECTOR = [
@@ -23,33 +24,29 @@ const REVEAL_SELECTOR = [
   ".hero-copy > :not(h1)",
   ".proof-strip > *",
   ".section-heading > *",
-  ".visual-card",
-  ".phase-card",
-  ".difference-list article",
   ".mentor-teaser > *",
   ".final-cta > :not(.liquid-cluster):not(h2)",
   ".page-hero > *",
-  ".module-card",
-  ".day-timeline article",
+  // Acordeones nativos <details> de programa y mentoría.
+  ".accordion-item",
+  // Tarjetas 3D del recorrido: sólo reveal, nunca .motion-card — el hover
+  // de .motion-card escribiría sobre el transform que sostiene la perspectiva.
+  ".path-node-card",
   ".inline-cta > *",
-  ".immersion-grid article",
-  ".schedule-list article",
   ".aftercare > *",
-  ".cert-steps article",
   ".event-card > *",
   ".profile-grid > *",
   ".credential-grid > *",
   ".mentor-method > *",
   ".registration-hero > *",
   ".form-section > *",
-  ".admission-steps article",
 ].join(",");
 
 const TEXT_SELECTOR = [
   ".title-line",
   ".page-hero h1",
   ".section-heading h2",
-  ".contrast-panel h2",
+  ".diff-lead h2",
   ".mentor-teaser h2",
   ".inline-cta h2",
   ".profile-copy h2",
@@ -70,18 +67,58 @@ export function MotionOrchestrator() {
     const hoverCleanups: Array<() => void> = [];
     root.classList.add("js-motion");
 
+    // El CSS oculta estos elementos (opacity/clip-path) y sólo los muestra al
+    // recibir `.is-visible`. Si el callback que la añade no llega, el contenido
+    // queda invisible PARA SIEMPRE. Pasa de verdad: en una pestaña en segundo
+    // plano Chrome no dispara IntersectionObserver ni requestAnimationFrame, así
+    // que la página se pintaría con los titulares en blanco.
+    // Por eso llevamos un registro y barremos como red de seguridad: el sistema
+    // debe fallar mostrando el contenido, nunca escondiéndolo.
+    const pending = new Set<HTMLElement>();
+
+    const reveal = (element: HTMLElement) => {
+      element.classList.add("is-visible");
+      pending.delete(element);
+      observer?.unobserve(element);
+    };
+
     const observer = prefersReducedMotion || !("IntersectionObserver" in window)
       ? null
       : new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
-              if (!entry.isIntersecting) return;
-              entry.target.classList.add("is-visible");
-              observer?.unobserve(entry.target);
+              if (entry.isIntersecting) reveal(entry.target as HTMLElement);
             });
           },
           { rootMargin: "0px 0px -10%", threshold: 0.1 },
         );
+
+    // Muestra lo que ya está dentro del viewport (o por encima, si se saltó).
+    let sweepFrame = 0;
+    const sweep = () => {
+      sweepFrame = 0;
+      pending.forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) reveal(element);
+        else if (rect.bottom <= 0) reveal(element);
+      });
+      if (pending.size === 0) detachSafetyNet();
+    };
+    const scheduleSweep = () => {
+      if (sweepFrame || pending.size === 0) return;
+      sweepFrame = requestAnimationFrame(sweep);
+    };
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") sweep();
+    };
+    const detachSafetyNet = () => {
+      window.removeEventListener("scroll", scheduleSweep);
+      window.removeEventListener("resize", scheduleSweep);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+    window.addEventListener("scroll", scheduleSweep, { passive: true });
+    window.addEventListener("resize", scheduleSweep, { passive: true });
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     const preparePointerMotion = (element: HTMLElement) => {
       if (prefersReducedMotion || !hasFinePointer || element.dataset.motionHover === "ready") return;
@@ -135,8 +172,12 @@ export function MotionOrchestrator() {
           preparePointerMotion(element);
         }
 
-        if (observer) observer.observe(element);
-        else element.classList.add("is-visible");
+        if (observer) {
+          pending.add(element);
+          observer.observe(element);
+        } else {
+          element.classList.add("is-visible");
+        }
       });
 
       elementsWithin(scope, TEXT_SELECTOR).forEach((element, index) => {
@@ -150,8 +191,12 @@ export function MotionOrchestrator() {
           element.getBoundingClientRect().top < window.innerHeight * 0.92;
 
         if (isAlreadyOnScreen) {
-          requestAnimationFrame(() => element.classList.add("is-visible"));
+          // rAF tampoco corre en pestaña oculta: registrar además como pendiente
+          // para que el barrido lo rescate si el frame nunca llega.
+          pending.add(element);
+          requestAnimationFrame(() => reveal(element));
         } else if (observer) {
+          pending.add(element);
           observer.observe(element);
         } else {
           element.classList.add("is-visible");
@@ -160,6 +205,9 @@ export function MotionOrchestrator() {
     };
 
     prepare(document);
+    // Barrido inicial: cubre el caso de montar con la pestaña ya oculta.
+    sweep();
+    const safetyTimer = window.setTimeout(sweep, 1200);
 
     const main = document.querySelector("#main-content");
     const mutationObserver = main && "MutationObserver" in window
@@ -175,6 +223,9 @@ export function MotionOrchestrator() {
     mutationObserver?.observe(main as Node, { childList: true, subtree: true });
 
     return () => {
+      window.clearTimeout(safetyTimer);
+      cancelAnimationFrame(sweepFrame);
+      detachSafetyNet();
       observer?.disconnect();
       mutationObserver?.disconnect();
       hoverCleanups.forEach((cleanup) => cleanup());

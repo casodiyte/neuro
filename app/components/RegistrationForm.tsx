@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { CONTACT_EMAIL, submitNetlifyForm } from "../lib/forms";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -12,27 +13,20 @@ export function RegistrationForm() {
     const formEl = event.currentTarget;
     const data = new FormData(formEl);
 
-    const payload = new URLSearchParams();
-    payload.set("form-name", "registro");
-    payload.set("name", String(data.get("name") || ""));
-    payload.set("email", String(data.get("email") || ""));
-    payload.set("specialty", String(data.get("specialty") || ""));
-    payload.set("city", String(data.get("city") || ""));
-    payload.set("message", String(data.get("message") || ""));
-    payload.set("bot-field", "");
-
     setStatus("submitting");
 
     try {
-      const response = await fetch("/__forms.html", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: payload.toString(),
+      await submitNetlifyForm("registro", {
+        name: String(data.get("name") || ""),
+        email: String(data.get("email") || ""),
+        specialty: String(data.get("specialty") || ""),
+        city: String(data.get("city") || ""),
+        message: String(data.get("message") || ""),
       });
-      if (!response.ok) throw new Error("Netlify Forms respondió con error");
       setStatus("success");
       formEl.reset();
-    } catch {
+    } catch (error) {
+      console.error(error);
       setStatus("error");
     }
   };
@@ -41,7 +35,7 @@ export function RegistrationForm() {
     status === "success"
       ? "Solicitud enviada. El equipo académico te contactará pronto."
       : status === "error"
-      ? "No pudimos enviar tu solicitud. Intenta de nuevo o escribe a neurosonologialatam@gmail.com."
+      ? `No pudimos enviar tu solicitud. Intenta de nuevo o escribe a ${CONTACT_EMAIL}.`
       : "";
 
   return (

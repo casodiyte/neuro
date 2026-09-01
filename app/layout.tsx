@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Figtree, Noto_Sans } from "next/font/google";
-import { headers } from "next/headers";
+import { SITE_URL } from "./lib/site";
 import { NeuralCanvas } from "./components/NeuralCanvas";
 import { MotionOrchestrator } from "./components/MotionOrchestrator";
 import { SiteFooter } from "./components/SiteFooter";
@@ -11,21 +11,22 @@ import "./globals.css";
 const figtree = Figtree({ variable: "--font-display", subsets: ["latin"] });
 const notoSans = Noto_Sans({ variable: "--font-body", subsets: ["latin"] });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.includes("localhost") ? "http" : "https");
-  const metadataBase = new URL(`${protocol}://${host}`);
-  const title = "Neurosonología CDMX 2026";
-  const description = "Programa integral de mentoría y certificación en neurosonología y hemodinamia cerebral por Doppler transcraneal.";
-  return {
-    metadataBase,
-    title: { default: title, template: "%s · Neurosonología CDMX" },
-    description,
-    openGraph: { title, description, type: "website", locale: "es_MX", images: [{ url: "/og.png", width: 1732, height: 909, alt: "Neurosonología CDMX 2026" }] },
-    twitter: { card: "summary_large_image", title, description, images: ["/og.png"] },
-  };
-}
+const title = "Neurosonología CDMX 2026";
+const description = "Programa integral de mentoría y certificación en neurosonología y hemodinamia cerebral por Doppler transcraneal.";
+
+// `metadataBase` estático a propósito: derivarlo de `headers()` sacaba a TODAS
+// las rutas del prerender y forzaba SSR en cada request. Se sobreescribe con
+// NEXT_PUBLIC_SITE_URL (Netlify lo expone como URL de deploy).
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: { default: title, template: "%s · Neurosonología CDMX" },
+  description,
+  alternates: { canonical: "/" },
+  // Next sólo autodetecta favicon.ico / app/icon.*; el SVG hay que declararlo.
+  icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }] },
+  openGraph: { title, description, type: "website", locale: "es_MX", url: "/", siteName: title, images: [{ url: "/og.png", width: 1732, height: 909, alt: "Neurosonología CDMX 2026" }] },
+  twitter: { card: "summary_large_image", title, description, images: ["/og.png"] },
+};
 
 export default function RootLayout({
   children,

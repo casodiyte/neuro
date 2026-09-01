@@ -39,6 +39,14 @@ yarn-error.log*
 /outputs/
 # Local analysis intermediates
 /work/
+/qa/
+
+# TS incremental
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# Hoja de contacto que genera scripts/prepare_neurosono_assets.py
+.tmp-neurosono-contact.png
 
 # Local Sites deployment archives
 /artifacts/

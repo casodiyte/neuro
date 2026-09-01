@@ -3,6 +3,7 @@
 import { FormEvent, useRef, useState } from "react";
 import { useDialog } from "./useDialog";
 import { ImageSlot } from "./ImageSlot";
+import { submitNetlifyForm } from "../lib/forms";
 
 type Course = { id: string; name: string; title: string; tagline: string };
 type Status = "idle" | "submitting" | "success" | "error";
@@ -20,27 +21,23 @@ export function ComingSoonModal({ course, onClose }: { course: Course | null; on
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const payload = new URLSearchParams();
-    payload.set("form-name", "aviso-curso");
-    payload.set("email", String(data.get("email") || ""));
-    payload.set("curso", course.title);
-    payload.set("bot-field", "");
     setStatus("submitting");
     try {
-      const response = await fetch("/__forms.html", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: payload.toString(),
+      await submitNetlifyForm("aviso-curso", {
+        email: String(data.get("email") || ""),
+        curso: course.title,
       });
-      if (!response.ok) throw new Error("error");
       setStatus("success");
-    } catch {
+    } catch (error) {
+      console.error(error);
       setStatus("error");
     }
   };
 
   return (
-    <div className="modal-backdrop" onMouseDown={onClose}>
+    <div className="modal-backdrop">
+      {/* Scrim como <button> real: clic para cerrar sin handlers sobre nodos no interactivos. */}
+      <button className="modal-scrim" type="button" tabIndex={-1} aria-hidden="true" onMouseDown={onClose} />
       <div
         ref={ref}
         className={`modal-card course-${course.id}`}
@@ -48,7 +45,6 @@ export function ComingSoonModal({ course, onClose }: { course: Course | null; on
         aria-modal="true"
         aria-labelledby="modal-title"
         tabIndex={-1}
-        onMouseDown={(event) => event.stopPropagation()}
       >
         <button className="modal-close" type="button" onClick={onClose} aria-label="Cerrar">
           <span aria-hidden="true">✕</span>

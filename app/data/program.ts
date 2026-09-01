@@ -101,36 +101,6 @@ export const journeyNav = [
   { href: "/inscripcion", label: "Inscripción" },
 ];
 
-// Alias retrocompatible (SiteHeader histórico importaba navItems).
-export const navItems = journeyNav;
-
-export const phases = [
-  {
-    number: "01",
-    kicker: "Antes de CDMX",
-    title: "Fundamento virtual",
-    copy: "Cuatro semanas para dominar física Doppler, anatomía vascular, ventanas acústicas y semiología espectral antes de tocar el equipo.",
-    meta: "4 semanas · 10 h/semana",
-    accent: "cyan",
-  },
-  {
-    number: "02",
-    kicker: "21—25 octubre",
-    title: "Mentoría presencial",
-    copy: "Cinco días de entrenamiento deliberado: discusión clínica, videoteca y seis horas diarias de práctica directa con guía experta.",
-    meta: "CDMX · 40 horas",
-    accent: "violet",
-  },
-  {
-    number: "03",
-    kicker: "Durante un año",
-    title: "Seguimiento y examen",
-    copy: "Webinars mensuales, comunidad de consulta y preparación progresiva para la evaluación teórico-práctica de certificación.",
-    meta: "12 meses · casos reales",
-    accent: "coral",
-  },
-];
-
 // ── FASE 1 · Curso Virtual (5 módulos asincrónicos) → SA-1 ───────────────────────
 export const virtualModules = [
   {

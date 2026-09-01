@@ -38,9 +38,6 @@
   ],
   "exclude": [
     "node_modules",
-    "db/**/*.ts",
-    "worker/**/*.ts",
-    "examples/**/*.ts",
-    "examples/**/*.tsx"
+    "worker/**/*.ts"
   ]
 }

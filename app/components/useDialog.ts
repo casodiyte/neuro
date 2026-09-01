@@ -55,7 +55,19 @@ export function useDialog(
     return () => {
       document.removeEventListener("keydown", onKeyDown, true);
       document.body.style.overflow = "";
-      previouslyFocused?.focus?.();
+
+      // Restaurar el foco sólo si el origen sigue siendo visible. Al abrir el
+      // modal "Próximamente" desde el menú, el menú se cierra y su botón queda
+      // en `visibility: hidden`: enfocarlo sería un no-op y el foco caería al
+      // <body>, dejando al usuario de teclado sin punto de referencia.
+      const stillVisible =
+        previouslyFocused?.isConnected &&
+        (typeof previouslyFocused.checkVisibility === "function"
+          ? previouslyFocused.checkVisibility({ visibilityProperty: true })
+          : true);
+
+      const fallback = document.getElementById("main-content");
+      (stillVisible ? previouslyFocused : fallback)?.focus?.();
     };
   }, [open, onClose, ref]);
 }

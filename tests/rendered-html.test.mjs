@@ -35,7 +35,7 @@ test("server-renders the completed Spanish home page", async () => {
   assert.match(html, /De la señal a la decisión clínica/);
   assert.match(html, /40 h virtuales \+ 40 h presenciales/);
   assert.match(html, /CDMX · 21—25 OCT 2026/);
-  assert.match(html, /hero-doppler-v1\.png/);
+  assert.match(html, /hero-doppler-v1\.webp/);
   assert.match(html, /Ilustración conceptual de una exploración por Doppler transcraneal/);
   assert.match(html, /Tres formas de aprender/);
   assert.match(html, /clinica-01-tecnica\.webp/);
@@ -109,4 +109,64 @@ test("ships a visible WebGL field with motion and accessibility safeguards", asy
   assert.match(header, /tabIndex=\{-1\}/);
   assert.match(css, /\.site-menu\.is-open/);
   assert.match(css, /\.site-menu-panel/);
+});
+
+test("serves sitemap, robots and a 404 page", async () => {
+  const sitemap = await render("/sitemap.xml");
+  assert.equal(sitemap.status, 200);
+  const sitemapBody = await sitemap.text();
+  assert.match(sitemapBody, /<urlset/);
+  for (const route of ["/programa", "/mentoria", "/certificacion", "/directora", "/inscripcion"]) {
+    assert.ok(sitemapBody.includes(route), `sitemap sin ${route}`);
+  }
+
+  const robots = await render("/robots.txt");
+  assert.equal(robots.status, 200);
+  assert.match(await robots.text(), /Sitemap:\s*https?:\/\/\S+\/sitemap\.xml/);
+
+  const missing = await render("/ruta-que-no-existe");
+  assert.equal(missing.status, 404);
+  assert.match(await missing.text(), /Esa señal/);
+});
+
+test("dialog scrims stay separate from the dialog nodes", async () => {
+  const [header, modal, css] = await Promise.all([
+    readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ComingSoonModal.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  // El scrim es un <button> real: sin él volvían los errores de jsx-a11y por
+  // colgar handlers de ratón de nodos no interactivos.
+  for (const [name, source, scrim] of [
+    ["SiteHeader", header, "site-menu-scrim"],
+    ["ComingSoonModal", modal, "modal-scrim"],
+  ]) {
+    assert.match(source, new RegExp(`<button[^>]*className="${scrim}"`), `${name} sin scrim <button>`);
+    assert.match(source, new RegExp(`className="${scrim}"[^>]*aria-hidden="true"`), `${name}: scrim visible para lectores`);
+    assert.doesNotMatch(source, /role="dialog"[\s\S]{0,200}?onMouseDown=\{onClose\}/, `${name}: handler sobre el diálogo`);
+    assert.match(css, new RegExp(`\\.${scrim}`), `globals.css sin estilos de .${scrim}`);
+  }
+});
+
+test("motion selectors still match the rendered markup", async () => {
+  const motion = await readFile(new URL("../app/components/MotionOrchestrator.tsx", import.meta.url), "utf8");
+
+  // Clases que se renombraron en su día y dejaron secciones sin animar en
+  // silencio. Si alguna reaparece aquí, es que volvió a desincronizarse.
+  for (const dead of [
+    ".difference-list",
+    ".module-card",
+    ".module-assessment",
+    ".day-timeline",
+    ".contrast-panel",
+    ".phase-card",
+  ]) {
+    assert.ok(!motion.includes(`"${dead}`), `MotionOrchestrator apunta a ${dead}, que ya no se emite`);
+  }
+
+  // Y los selectores vigentes deben seguir presentes.
+  for (const live of [".diff-point", ".accordion-item", ".course-card", ".path-node-card", ".visual-card"]) {
+    assert.ok(motion.includes(live), `MotionOrchestrator perdió ${live}`);
+  }
 });

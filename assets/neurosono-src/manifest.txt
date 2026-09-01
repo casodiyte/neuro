@@ -1,0 +1,24 @@
+NEUROSONO — Manifiesto de imágenes
+
+Los archivos de esta carpeta son los MAESTROS. No se publican: `public/` sólo
+recibe el `.webp` que genera `scripts/prepare_neurosono_assets.py`, que acepta
+maestros en .png / .jpg / .jpeg / .webp.
+
+FOTOGRAFÍA REAL (aportada por el cliente)
+recorrido-01-virtual.jpg      → Monitor clínico con trazados (EKG / actividad cerebral / respiración).
+recorrido-02-presencial.jpg   → Transductor sobre el cuello del paciente, manos con guante. Práctica directa.
+recorrido-03-seguimiento.jpg  → Médico en consulta telefónica frente a imágenes cerebrales en pantalla.
+diferencial-cerebro.jpg       → Exploración ecográfica en curso: mano, transductor y paciente.
+quirofano-reserva.jpg         → SIN USO. Quirófano moderno vacío. Fuera de TARGETS: se descartó
+                                para el diferencial porque no aparece nadie y esa sección afirma
+                                "es práctica acompañada". Se conserva por si sirve más adelante.
+
+ILUSTRACIÓN GENERADA (renders previos, se mantienen a propósito)
+hero-doppler-v1.png           → Retrato conceptual con transductor y flujo cerebral. CON CANAL ALFA:
+                                debe conservarse al regenerar, o aparece un recuadro negro tras el recorte.
+clinica-01-tecnica.png        → Perfil conceptual con transductor Doppler, red vascular y señal espectral.
+clinica-02-anatomia.png       → Anatomía vascular cerebral estilizada en rojo arterial y plata.
+clinica-03-practica.png       → Escena clínica conceptual de práctica supervisada.
+curso2-proximamente.png       → Nebulosa abstracta violeta.
+curso3-proximamente.png       → Volumen abstracto plateado.
+textura-doppler.png           → SIN USO. Fuera de TARGETS: ninguna vista lo referencia.

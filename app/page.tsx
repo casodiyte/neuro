@@ -6,6 +6,7 @@ import { TextReveal } from "./components/TextReveal";
 import { PathJourney } from "./components/PathJourney";
 import { CourseCard } from "./components/CourseCard";
 import { HomeDifferential } from "./components/HomeDifferential";
+import { MentorTeaser } from "./components/MentorTeaser";
 import { Icon } from "./components/Icon";
 
 export default function Home() {
@@ -33,7 +34,7 @@ export default function Home() {
         <figure className="hero-visual">
           <Image
             className="hero-visual-image"
-            src="/images/neurosono/hero-doppler-v1.png"
+            src="/images/neurosono/hero-doppler-v1.webp"
             alt="Ilustración conceptual de una exploración por Doppler transcraneal con flujo cerebral"
             width={1024}
             height={1536}
@@ -48,7 +49,7 @@ export default function Home() {
         {programFacts.slice(0, 3).map((fact) => <div key={fact.label}><strong>{fact.value}</strong><span>{fact.label}</span></div>)}
       </section>
 
-      <section className="section" aria-labelledby="path-title">
+      <section className="section path-section" aria-labelledby="path-title">
         <div className="section-heading">
           <p className="section-index">01 / EL RECORRIDO</p>
           <h2 id="path-title"><TextReveal text="Un camino, tres estaciones" /><br />hacia la <em><TextReveal text="certificación." delay={0.14} /></em></h2>
@@ -58,7 +59,7 @@ export default function Home() {
       </section>
 
       <section className="section visual-atlas" aria-labelledby="atlas-title">
-        <div className="section-heading">
+        <div className="section-heading atlas-heading">
           <p className="section-index">02 / MIRADA CLÍNICA</p>
           <h2 id="atlas-title"><TextReveal text="Tres formas de aprender" /><br />a <em><TextReveal text="ver el flujo." delay={0.14} /></em></h2>
           <p>La señal cobra sentido cuando se conecta con anatomía, técnica y práctica deliberada. Cada capa del programa está diseñada para hacer visible esa relación.</p>
@@ -75,11 +76,11 @@ export default function Home() {
                 quality={88}
                 loading="lazy"
               />
-              <span className="visual-chip">Técnica · tiempo real</span>
             </figure>
             <div className="visual-card-copy">
-              <span className="visual-number">01</span>
-              <div><h3>Ventana, ángulo y señal</h3><p>La exploración se aprende con la mano, el oído y una lectura consciente del espectro.</p></div>
+              <span className="visual-label">Técnica · tiempo real</span>
+              <h3>Ventana, ángulo y señal</h3>
+              <p>La exploración se aprende con la mano, el oído y una lectura consciente del espectro.</p>
             </div>
           </article>
 
@@ -93,11 +94,11 @@ export default function Home() {
                 quality={88}
                 loading="lazy"
               />
-              <span className="visual-chip">Anatomía vascular</span>
             </figure>
             <div className="visual-card-copy">
-              <span className="visual-number">02</span>
-              <div><h3>Anatomía en volumen</h3><p>Reconoce territorios, profundidades y direcciones antes de interpretar velocidades.</p></div>
+              <span className="visual-label">Anatomía vascular</span>
+              <h3>Anatomía en volumen</h3>
+              <p>Reconoce territorios, profundidades y direcciones antes de interpretar velocidades.</p>
             </div>
           </article>
 
@@ -111,11 +112,11 @@ export default function Home() {
                 quality={86}
                 loading="lazy"
               />
-              <span className="visual-chip">Práctica supervisada</span>
             </figure>
             <div className="visual-card-copy">
-              <span className="visual-number">03</span>
-              <div><h3>Aprender haciendo</h3><p>Feedback inmediato para convertir cada ajuste técnico en criterio reproducible.</p></div>
+              <span className="visual-label">Práctica supervisada</span>
+              <h3>Aprender haciendo</h3>
+              <p>Feedback inmediato para convertir cada ajuste técnico en criterio reproducible.</p>
             </div>
           </article>
         </div>
@@ -123,10 +124,7 @@ export default function Home() {
 
       <HomeDifferential />
 
-      <section className="section mentor-teaser" aria-labelledby="mentor-title">
-        <div className="mentor-monogram" aria-hidden="true"><span>SC</span><i /><i /><i /></div>
-        <div><p className="section-index">04 / DIRECCIÓN ACADÉMICA</p><h2 id="mentor-title">Dra. Silvia Viviana<br />Cocorullo</h2><p>Neuróloga y neurosonóloga, formadora internacional y evaluadora vinculada al capítulo latinoamericano de neurosonología.</p><Link className="text-link" href="/directora">Conocer su trayectoria <Icon name="arrowUpRight" size={16} className="icon-cta" /></Link></div>
-      </section>
+      <MentorTeaser />
 
       <section className="section" aria-labelledby="universe-title">
         <div className="section-heading">
